@@ -27,6 +27,9 @@ export default function Home() {
         <p className="text-zinc-400 mt-4 text-center max-w-xl">
           paste your github repo and get brutally honest feedback powered by AI
         </p>
+        <p className="text-zinc-500 mt-2 text-center max-w-xl text-sm">
+          Note: only public GitHub repositories are supported. Private repos cannot be analyzed.
+        </p>
 
         {/* INPUT */}
         <div className="w-full max-w-2xl mt-10">
