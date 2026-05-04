@@ -2,25 +2,50 @@ import { useState } from "react";
 import { roastRepo } from "../services/api";
 import RoastModes from "./RoastModes";
 
+const validateGitHubUrl = (url) => {
+  if (!url) {
+    return { valid: false, message: "Please enter a GitHub repository URL." };
+  }
+
+  const trimmedUrl = url.trim();
+  const githubPattern = /^(https?:\/\/)?(www\.)?github\.com\/[\w.-]+\/[\w.-]+\/?$/i;
+
+  if (!githubPattern.test(trimmedUrl)) {
+    return { valid: false, message: "Enter a valid GitHub repo URL like github.com/username/repo." };
+  }
+
+  return { valid: true, message: "" };
+};
+
 export default function RepoInput({ setResults, setLoading }) {
   const [repoUrl, setRepoUrl] = useState("");
   const [mode, setMode] = useState("Brutal");
+  const [error, setError] = useState("");
 
   const handleRoast = async () => {
-    if (!repoUrl) return;
+    const validation = validateGitHubUrl(repoUrl);
+    if (!validation.valid) {
+      setError(validation.message);
+      return;
+    }
 
     try {
+      setError("");
       setLoading(true);
 
       const res = await roastRepo({
-        repoUrl,
+        repoUrl: repoUrl.trim(),
         mode
       });
 
       setResults(res.data);
     } catch (err) {
       console.error(err);
-      alert("Something went wrong 😭");
+      if (err.response && (err.response.status === 403 || err.response.status === 404)) {
+        setError("This repository appears to be private or inaccessible. Please use a public GitHub repo.");
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
     } finally {
       setLoading(false);
     }
@@ -42,9 +67,6 @@ export default function RepoInput({ setResults, setLoading }) {
 
         {/* INPUT */}
         <div className="flex items-center gap-3 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 focus-within:border-orange-500 transition">
-
-    
-
           <input
             value={repoUrl}
             onChange={(e) => setRepoUrl(e.target.value)}
@@ -52,6 +74,12 @@ export default function RepoInput({ setResults, setLoading }) {
             className="flex-1 bg-transparent outline-none text-white placeholder:text-zinc-600"
           />
         </div>
+
+        {error && (
+          <p className="mt-3 text-sm text-red-400 font-medium">
+            {error}
+          </p>
+        )}
 
         {/* MODES */}
         <div className="mt-5">
