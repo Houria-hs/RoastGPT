@@ -38,7 +38,16 @@ Make it funny but harsh.
 `
 };
 
-const personality = modePrompts[mode] || modePrompts["Brutal"];
+const sanitizeMode = (inputMode) => {
+  if (!inputMode || typeof inputMode !== "string") return "Brutal";
+  const trimmed = inputMode.trim();
+  return Object.prototype.hasOwnProperty.call(modePrompts, trimmed)
+    ? trimmed
+    : "Brutal";
+};
+
+const selectedMode = sanitizeMode(mode);
+const personality = modePrompts[selectedMode];
 
 const prompt = `
 You are a sarcastic software engineer.
@@ -84,6 +93,11 @@ Language: ${repoData.language}
 
   if (!match) throw new Error("No JSON found from Gemini");
 
-  return JSON.parse(match[0]);
+  const data = JSON.parse(match[0]);
+
+  return {
+    mode: selectedMode,
+    ...data
+  };
 
 }
