@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# env 
+.env
+.env.*
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# build (if you ever transpile)
+dist/
+
+# system
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
