@@ -9,9 +9,9 @@ export default function RoastResults({ data }) {
     else color = "bg-red-500";
 
   return (
-    <div className="w-full mt-10">
+    <div className="w-full mt-10 overflow-hidden">
 
-      <div className="bg-black/70 backdrop-blur-xl border border-zinc-800 rounded-2xl p-6 font-mono shadow-xl">
+      <div className="bg-black/70 backdrop-blur-xl border border-zinc-800 rounded-2xl p-6 font-mono shadow-xl overflow-x-auto">
 
         {/* header */}
         <div className="flex gap-2 mb-6">
@@ -29,7 +29,7 @@ export default function RoastResults({ data }) {
         {/* roast */}
         <div className="space-y-2 mb-6">
           {data.roast.map((line, i) => (
-            <p key={i} className="text-red-400">
+            <p key={i} className="text-red-400 break-words">
               ❯ {line}
             </p>
           ))}
